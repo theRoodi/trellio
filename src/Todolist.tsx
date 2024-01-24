@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {TaskType} from './App';
 
 type FilterType = 'all' | 'completed' | 'active'
@@ -6,17 +6,19 @@ type FilterType = 'all' | 'completed' | 'active'
 type Props = {
     title: string
     tasks: Array<TaskType>
-    removeTask: (taskId: number) => void
+    removeTask: (taskId: string) => void
+    addTask: (title: string) => void
 }
 
 export const Todolist = (props: Props) => {
 
 
-    const {title, tasks, removeTask} = props
+    const {title, tasks, removeTask, addTask} = props
     const [filter, setFilter] = useState<FilterType>('all')
+    const [taskTitle, setTaskTitle] = useState<string>('')
 
-    const getFilteredTasks = (allTasks:Array<TaskType>, filterValue: FilterType):Array<TaskType> => {
-        switch (filterValue){
+    const getFilteredTasks = (allTasks: Array<TaskType>, filterValue: FilterType): Array<TaskType> => {
+        switch (filterValue) {
             case 'active':
                 return allTasks.filter(task => !task.isDone)
             case 'completed':
@@ -31,6 +33,21 @@ export const Todolist = (props: Props) => {
     const changeFilter = (nextFilterValue: FilterType) => {
         setFilter(nextFilterValue)
     }
+
+    const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        setTaskTitle(e.currentTarget.value)
+    }
+
+    const onAddTask = () => {
+        addTask(taskTitle)
+        setTaskTitle('')
+    }
+
+    const userMessage = taskTitle?.length < 15 ? <span>Enter new title</span> :
+        <span style={{color: 'red'}}>Title is too long!</span>
+
+    const onKeyDownAddTask = (e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && onAddTask()
+    const isAddBtnDisabled = !taskTitle || taskTitle.length >= 15
 
     const listItems: Array<JSX.Element> = filteredTasks.map(task => {
             const onClickRemoveItem = () => {
@@ -54,8 +71,10 @@ export const Todolist = (props: Props) => {
         <div className="todolist">
             <h3>What to {title}</h3>
             <div>
-                <input/>
-                <button>+</button>
+                <input value={taskTitle} onChange={onChangeTitle}
+                       onKeyDown={onKeyDownAddTask}/>
+                <button onClick={onAddTask} disabled={isAddBtnDisabled}>+</button>
+                <div>{userMessage}</div>
             </div>
             {tasksList}
             <div>
