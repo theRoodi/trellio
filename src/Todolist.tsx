@@ -8,14 +8,17 @@ type Props = {
     tasks: Array<TaskType>
     removeTask: (taskId: string) => void
     addTask: (title: string) => void
+    changeTaskStatus: (taskId: string, status: boolean) => void
+    changeTaskTitle: (taskId: string, title: string) => void
 }
 
 export const Todolist = (props: Props) => {
 
 
-    const {title, tasks, removeTask, addTask} = props
+    const {title, tasks, removeTask, addTask, changeTaskStatus, changeTaskTitle} = props
     const [filter, setFilter] = useState<FilterType>('all')
-    const [taskTitle, setTaskTitle] = useState<string>('')
+    const [taskTitle, setTaskTitle] = useState('')
+    const [inputError, setInputError] = useState(false)
 
     const getFilteredTasks = (allTasks: Array<TaskType>, filterValue: FilterType): Array<TaskType> => {
         switch (filterValue) {
@@ -35,16 +38,26 @@ export const Todolist = (props: Props) => {
     }
 
     const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+        inputError && setInputError(false)
         setTaskTitle(e.currentTarget.value)
     }
 
+
     const onAddTask = () => {
-        addTask(taskTitle)
+        const trimmedTitle = taskTitle.trim()
+        if (trimmedTitle) {
+            addTask(taskTitle)
+        } else {
+            setInputError(true)
+        }
         setTaskTitle('')
     }
 
-    const userMessage = taskTitle?.length < 15 ? <span>Enter new title</span> :
-        <span style={{color: 'red'}}>Title is too long!</span>
+    const userMessage = inputError
+        ? <span style={{color: 'red'}}>Need minimum 1 symbol!</span>
+        : taskTitle?.length < 15
+            ? <span>Enter new title</span>
+            : <span style={{color: 'red'}}>Title is too long!</span>
 
     const onKeyDownAddTask = (e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && onAddTask()
     const isAddBtnDisabled = !taskTitle || taskTitle.length >= 15
@@ -53,10 +66,17 @@ export const Todolist = (props: Props) => {
             const onClickRemoveItem = () => {
                 removeTask(task.id)
             }
+            const onChangeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
+                changeTaskStatus(task.id, e.currentTarget.checked)
+            }
+
+            const onChangeNewTitle = (e: ChangeEvent<HTMLInputElement>) => {
+                changeTaskTitle(task.id, e.currentTarget.title)
+            }
             return (
                 <li key={task.id}>
-                    <input type="checkbox" checked={task.isDone}/>
-                    <span>{task.title}</span>
+                    <input type="checkbox" checked={task.isDone} onChange={onChangeTaskStatus}/>
+                    <span className={task.isDone ? 'task-done' : 'task'}>{task.title}</span>
                     <button onClick={onClickRemoveItem}>x</button>
                 </li>
             )
@@ -72,15 +92,21 @@ export const Todolist = (props: Props) => {
             <h3>What to {title}</h3>
             <div>
                 <input value={taskTitle} onChange={onChangeTitle}
-                       onKeyDown={onKeyDownAddTask}/>
+                       onKeyDown={onKeyDownAddTask}
+                       className={inputError ? 'input-error' : ''}/>
                 <button onClick={onAddTask} disabled={isAddBtnDisabled}>+</button>
                 <div>{userMessage}</div>
             </div>
             {tasksList}
             <div>
-                <button onClick={() => changeFilter('all')}>All</button>
-                <button onClick={() => changeFilter('active')}>Active</button>
-                <button onClick={() => changeFilter('completed')}>Completed</button>
+                <button className={filter === 'all' ? 'activeBtn' : 'btn'} onClick={() => changeFilter('all')}>All
+                </button>
+                <button className={filter === 'active' ? 'activeBtn' : 'btn'}
+                        onClick={() => changeFilter('active')}>Active
+                </button>
+                <button className={filter === 'completed' ? 'activeBtn' : 'btn'}
+                        onClick={() => changeFilter('completed')}>Completed
+                </button>
             </div>
         </div>
     )

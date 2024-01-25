@@ -8,6 +8,7 @@ export type TaskType = {
     isDone: boolean
     title: string
 }
+
 function App() {
 
 
@@ -19,7 +20,7 @@ function App() {
 
     const title = 'Learn'
 
-    const removeTask = (taskId : string) => {
+    const removeTask = (taskId: string) => {
         setTasks(tasks.filter(task => task.id !== taskId))
     }
 
@@ -33,9 +34,30 @@ function App() {
         setTasks([...tasks, newTask])
     }
 
+    const changeTaskStatus = (taskId: string, status: boolean) => {
+        const updatedTasks: Array<TaskType> = tasks.map(task => task.id === taskId
+            ? {...task, isDone: status}
+            : task
+        )
+        setTasks(updatedTasks)
+    }
+
+    const changeTaskTitle = (taskId: string, title: string) => {
+        const updatedTasks: Array<TaskType> = tasks.map(task => task.id === taskId
+            ? {...task, title}
+            : task
+        )
+        setTasks(updatedTasks)
+    }
+
     return (
         <div className="App">
-            <Todolist title={title} tasks={tasks} removeTask={removeTask} addTask={addTask}/>
+            <Todolist title={title}
+                      tasks={tasks}
+                      removeTask={removeTask}
+                      addTask={addTask}
+                      changeTaskStatus={changeTaskStatus}
+                      changeTaskTitle={changeTaskTitle}/>
         </div>
     );
 }
