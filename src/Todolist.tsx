@@ -19,6 +19,7 @@ export const Todolist = (props: Props) => {
     const [filter, setFilter] = useState<FilterType>('all')
     const [taskTitle, setTaskTitle] = useState('')
     const [inputError, setInputError] = useState(false)
+    const [toggle, setToggle] = useState(false)
 
     const getFilteredTasks = (allTasks: Array<TaskType>, filterValue: FilterType): Array<TaskType> => {
         switch (filterValue) {
@@ -73,6 +74,18 @@ export const Todolist = (props: Props) => {
             const onChangeNewTitle = (e: ChangeEvent<HTMLInputElement>) => {
                 changeTaskTitle(task.id, e.currentTarget.title)
             }
+
+            const toggleTitle = () => {
+                const doubleTap = () => {
+                    setToggle(!toggle)
+                }
+                return (
+                    toggle
+                        ? <span onDoubleClick={doubleTap} className={task.isDone ? 'task-done' : 'task'}>{task.title}</span>
+                        : <input onBlur={doubleTap}/>
+                )
+            }
+
             return (
                 <li key={task.id}>
                     <input type="checkbox" checked={task.isDone} onChange={onChangeTaskStatus}/>
