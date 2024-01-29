@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Todolist} from './Todolist';
+import {FilterType, Todolist} from './Todolist';
 
 
 export type TaskType = {
@@ -9,55 +9,96 @@ export type TaskType = {
     title: string
 }
 
+type TodolistsType = {
+    id: string
+    title: string
+    filter: FilterType
+}
+
+
 function App() {
 
+    const todoId1 = crypto.randomUUID()
+    const todoId2 = crypto.randomUUID()
 
-    const [tasks, setTasks] = useState<Array<TaskType>>([
-        {id: crypto.randomUUID(), isDone: false, title: 'HTML'},
-        {id: crypto.randomUUID(), isDone: true, title: 'CSS'},
-        {id: crypto.randomUUID(), isDone: false, title: 'JSx'}
+    const [todolists, setTodolists] = useState<TodolistsType[]>([
+        {id: todoId1, title: 'What to buy', filter: 'all'},
+        {id: todoId2, title: 'What to learn', filter: 'all'},
     ])
 
-    const title = 'Learn'
 
-    const removeTask = (taskId: string) => {
-        setTasks(tasks.filter(task => task.id !== taskId))
+    const [tasks, setTasks] = useState({
+        [todoId1]: [
+            {id: crypto.randomUUID(), isDone: false, title: 'HTML'},
+            {id: crypto.randomUUID(), isDone: true, title: 'CSS'},
+            {id: crypto.randomUUID(), isDone: false, title: 'JSx'}
+        ],
+        [todoId2]: [
+            {id: crypto.randomUUID(), isDone: false, title: 'HTML2'},
+            {id: crypto.randomUUID(), isDone: true, title: 'CSS2'},
+            {id: crypto.randomUUID(), isDone: false, title: 'JSx2'}
+        ]
+    })
+
+    const removeTask = (todoId: string, taskId: string) => {
+        setTasks({
+            ...tasks,
+            [todoId]: tasks[todoId].filter(t => t.id != taskId)
+        })
     }
 
-    const addTask = (title: string) => {
+    const addTask = (todoId: string, title: string) => {
         const newTaskId = crypto.randomUUID()
         const newTask: TaskType = {
             id: newTaskId,
             title: title,
             isDone: false
         }
-        setTasks([...tasks, newTask])
+        setTasks({
+            ...tasks,
+            [todoId]: [...tasks[todoId], newTask]
+        })
     }
 
-    const changeTaskStatus = (taskId: string, status: boolean) => {
-        const updatedTasks: Array<TaskType> = tasks.map(task => task.id === taskId
-            ? {...task, isDone: status}
-            : task
-        )
-        setTasks(updatedTasks)
+    const changeTaskStatus = (todoId: string, taskId: string, isDone: boolean) => {
+
+        setTasks({
+            ...tasks,
+            [todoId]: tasks[todoId].map(t => t.id === taskId
+                ? {...t, isDone}
+                : t)
+        })
     }
 
-    const changeTaskTitle = (taskId: string, title: string) => {
-        const updatedTasks: Array<TaskType> = tasks.map(task => task.id === taskId
-            ? {...task, title}
-            : task
+    const changeTodolists = (todoId: string, filter: FilterType) => {
+        setTodolists(
+            todolists.map(el => el.id === todoId ? {...el, filter} : el)
         )
-        setTasks(updatedTasks)
     }
+
+
+    const removeTodo = (todoId: string) => {
+        setTodolists(todolists.filter(t => t.id !== todoId))
+        delete tasks[todoId]
+    }
+
+    console.log(tasks)
+    const lists = todolists.map(i => (
+        <Todolist key={i.id}
+                  id={i.id}
+                  title={i.title}
+                  tasks={tasks[i.id]}
+                  filter={i.filter}
+                  removeTask={removeTask}
+                  addTask={addTask}
+                  changeTaskStatus={changeTaskStatus}
+                  changeTodolists={changeTodolists}
+                  removeTodo={removeTodo}/>
+    ))
 
     return (
         <div className="App">
-            <Todolist title={title}
-                      tasks={tasks}
-                      removeTask={removeTask}
-                      addTask={addTask}
-                      changeTaskStatus={changeTaskStatus}
-                      changeTaskTitle={changeTaskTitle}/>
+            {lists}
         </div>
     );
 }

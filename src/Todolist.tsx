@@ -1,22 +1,28 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
 import {TaskType} from './App';
 
-type FilterType = 'all' | 'completed' | 'active'
+export type FilterType = 'all' | 'completed' | 'active'
 
 type Props = {
+    id: string
     title: string
     tasks: Array<TaskType>
-    removeTask: (taskId: string) => void
-    addTask: (title: string) => void
-    changeTaskStatus: (taskId: string, status: boolean) => void
-    changeTaskTitle: (taskId: string, title: string) => void
+    filter: FilterType
+    removeTask: (todoId: string, taskId: string) => void
+    addTask: (todoId: string, title: string) => void
+    changeTaskStatus: (todoId: string, taskId: string, status: boolean) => void
+    changeTodolists: (todoId: string, filter: FilterType) => void
+    removeTodo: (todoId: string) => void
 }
 
 export const Todolist = (props: Props) => {
 
 
-    const {title, tasks, removeTask, addTask, changeTaskStatus, changeTaskTitle} = props
-    const [filter, setFilter] = useState<FilterType>('all')
+    const {
+        id, title, tasks, filter,
+        removeTask, addTask, changeTaskStatus, changeTodolists,
+        removeTodo
+    } = props
     const [taskTitle, setTaskTitle] = useState('')
     const [inputError, setInputError] = useState(false)
     const [toggle, setToggle] = useState(false)
@@ -35,7 +41,7 @@ export const Todolist = (props: Props) => {
     const filteredTasks: Array<TaskType> = getFilteredTasks(tasks, filter)
 
     const changeFilter = (nextFilterValue: FilterType) => {
-        setFilter(nextFilterValue)
+        changeTodolists(id, nextFilterValue)
     }
 
     const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,11 +49,15 @@ export const Todolist = (props: Props) => {
         setTaskTitle(e.currentTarget.value)
     }
 
+    const deleteTodoHandler = () => {
+        removeTodo(id)
+    }
+
 
     const onAddTask = () => {
         const trimmedTitle = taskTitle.trim()
         if (trimmedTitle) {
-            addTask(taskTitle)
+            addTask(id, taskTitle)
         } else {
             setInputError(true)
         }
@@ -65,14 +75,10 @@ export const Todolist = (props: Props) => {
 
     const listItems: Array<JSX.Element> = filteredTasks.map(task => {
             const onClickRemoveItem = () => {
-                removeTask(task.id)
+                removeTask(id, task.id)
             }
             const onChangeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-                changeTaskStatus(task.id, e.currentTarget.checked)
-            }
-
-            const onChangeNewTitle = (e: ChangeEvent<HTMLInputElement>) => {
-                changeTaskTitle(task.id, e.currentTarget.title)
+                changeTaskStatus(id, task.id, e.currentTarget.checked)
             }
 
             const toggleTitle = () => {
@@ -102,7 +108,11 @@ export const Todolist = (props: Props) => {
 
     return (
         <div className="todolist">
-            <h3>What to {title}</h3>
+            <h3>
+                {title}
+                <button onClick={deleteTodoHandler}>X</button>
+            </h3>
+
             <div>
                 <input value={taskTitle} onChange={onChangeTitle}
                        onKeyDown={onKeyDownAddTask}
