@@ -1,7 +1,9 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 type Props = {
-    onClick: ( itemTitle: string) => void
+    onClick: (itemTitle: string) => void
 }
 
 
@@ -14,7 +16,7 @@ export const AddItemForm = (props: Props) => {
         if (trimmedTitle !== '') {
             props.onClick(itemTitle)
         } else {
-            setInputError("Title is required")
+            setInputError('Title is required')
         }
         setItemTitle('')
     }
@@ -33,13 +35,25 @@ export const AddItemForm = (props: Props) => {
             ? <span>Enter new title</span>
             : <span style={{color: 'red'}}>Title is too long!</span>
 
+    const styleBtn = {
+        maxWidth: '40px',
+        maxHeight: '40px',
+        minWidth: '40px',
+        minHeight: '40px',
+        marginLeft: '10px'
+    }
+
     return (
         <div>
-            <input value={itemTitle} onChange={onChangeTitle}
-                   onKeyDown={onKeyDownAddTask}
-                   className={inputError ? 'input-error' : ''}/>
-            <button onClick={onAddItem} disabled={isAddBtnDisabled}>+</button>
-            <div>{userMessage}</div>
+            <TextField id="outlined-basic"
+                       label={userMessage}
+                       variant="outlined"
+                       value={itemTitle} onChange={onChangeTitle}
+                       onKeyDown={onKeyDownAddTask}
+                       className={inputError ? 'input-error' : ''}
+                       size={'small'}
+            />
+            <Button style={styleBtn} onClick={onAddItem} disabled={isAddBtnDisabled} variant="contained">+</Button>
         </div>
     )
 }

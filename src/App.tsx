@@ -2,6 +2,10 @@ import React, {useState} from 'react';
 import './App.css';
 import {FilterType, Todolist} from './Todolist';
 import {AddItemForm} from './AddItemForm';
+import ButtonAppBar from './components/ButtonAppBar';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 
 
 export type TaskType = {
@@ -112,26 +116,38 @@ function App() {
         )
     }
     const lists = todolists.map(i => (
-        <Todolist key={i.id}
-                  id={i.id}
-                  title={i.title}
-                  tasks={tasks[i.id]}
-                  filter={i.filter}
-                  removeTask={removeTask}
-                  addTask={addTask}
-                  changeTaskStatus={changeTaskStatus}
-                  changeTodolists={changeTodolists}
-                  removeTodo={removeTodo}
-                  updateTask={updateTask}
-                  updateTodo={updateTodo}/>
+        <Grid item>
+            <Paper style={{padding: '15px', margin: '15px'}}>
+                <Todolist key={i.id}
+                          id={i.id}
+                          title={i.title}
+                          tasks={tasks[i.id]}
+                          filter={i.filter}
+                          removeTask={removeTask}
+                          addTask={addTask}
+                          changeTaskStatus={changeTaskStatus}
+                          changeTodolists={changeTodolists}
+                          removeTodo={removeTodo}
+                          updateTask={updateTask}
+                          updateTodo={updateTodo}/>
+            </Paper>
+        </Grid>
     ))
 
     return (
         <div className="App">
-            <AddItemForm onClick={addTodolist}/>
-            {lists}
+            <ButtonAppBar/>
+            <Container fixed>
+                <Grid container style={{margin: '15px'}}>
+                    <AddItemForm onClick={addTodolist}/>
+                </Grid>
+                <Grid container spacing={3}>
+                    {lists}
+                </Grid>
+            </Container>
         </div>
-    );
+    )
+        ;
 }
 
 export default App;
