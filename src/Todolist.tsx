@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import {SuperCheckbox} from './components/SuperCheckbox';
 
 export type FilterType = 'all' | 'completed' | 'active'
 
@@ -59,18 +60,18 @@ export const Todolist = (props: Props) => {
     const updateTaskHandler = (title: string, taskId: string) => {
         updateTask(id, taskId, title)
     }
+    const onChangeTaskStatus = (taskId: string, isDone: boolean) => {
+        changeTaskStatus(id, taskId, isDone)
+    }
 
 
     const listItems: Array<JSX.Element> = filteredTasks.map(task => {
             const onClickRemoveItem = () => {
                 removeTask(id, task.id)
             }
-            const onChangeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-                changeTaskStatus(id, task.id, e.currentTarget.checked)
-            }
             return (
                 <li key={task.id}>
-                    <Checkbox checked={task.isDone} onChange={onChangeTaskStatus}/>
+                    <SuperCheckbox isDone={task.isDone} onClick={(isDone ) => onChangeTaskStatus(task.id ,isDone)}/>
                     <EditableSpan title={task.title} onClick={(title) => updateTaskHandler(title, task.id)}/>
                     <IconButton onClick={onClickRemoveItem}>
                         <DeleteIcon/>

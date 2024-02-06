@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {addTaskAC, changeTaskStatusAC, removeTaskAC, tasksReducer} from './reducers/tasksReducer';
+import {addTodoAC, changeTodoFilterAC, changeTodoTitleAC, removeTodoAC, todoReducer} from './reducers/todoReducer';
 
 
 export type TaskType = {
@@ -27,13 +28,13 @@ function App() {
     const todoId1 = crypto.randomUUID()
     const todoId2 = crypto.randomUUID()
 
-    const [todolists, setTodolists] = useState<TodolistsType[]>([
+    const [todolists, dispatchTodo] = useReducer(todoReducer, [
         {id: todoId1, title: 'What to buy', filter: 'all'},
         {id: todoId2, title: 'What to learn', filter: 'all'},
     ])
 
 
-    const [tasks, dispatch] = useReducer<any>(tasksReducer,{
+    const [tasks, dispatchTask] = useReducer<any>(tasksReducer, {
         [todoId1]: [
             {id: crypto.randomUUID(), isDone: false, title: 'HTML'},
             {id: crypto.randomUUID(), isDone: true, title: 'CSS'},
@@ -47,62 +48,15 @@ function App() {
     })
 
     const removeTask = (todoId: string, taskId: string) => {
-        // setTasks({
-        //     ...tasks,
-        //     [todoId]: tasks[todoId].filter(t => t.id != taskId)
-        // })
-        dispatch(removeTaskAC(todoId, taskId))
+        dispatchTask(removeTaskAC(todoId, taskId))
     }
 
     const addTask = (todoId: string, title: string) => {
-        // const newTaskId = crypto.randomUUID()
-        // const newTask: TaskType = {
-        //     id: newTaskId,
-        //     title: title,
-        //     isDone: false
-        // }
-        // setTasks({
-        //     ...tasks,
-        //     [todoId]: [...tasks[todoId], newTask]
-        // })
-        dispatch(addTaskAC(todoId, title))
-    }
-
-    const addTodolist = (title: string) => {
-        const id = crypto.randomUUID()
-
-        const newTodo: TodolistsType = {
-            id,
-            title,
-            filter: 'all'
-        }
-
-        setTodolists([newTodo, ...todolists])
-        // setTasks({...tasks, [id]: []})
+        dispatchTask(addTaskAC(todoId, title))
     }
 
     const changeTaskStatus = (todoId: string, taskId: string, isDone: boolean) => {
-        //
-        // setTasks({
-        //     ...tasks,
-        //     [todoId]: tasks[todoId].map(t => t.id === taskId
-        //         ? {...t, isDone}
-        //         : t)
-        // })
-
-        dispatch(changeTaskStatusAC(todoId , taskId , isDone ))
-    }
-
-    const changeTodolists = (todoId: string, filter: FilterType) => {
-        setTodolists(
-            todolists.map(el => el.id === todoId ? {...el, filter} : el)
-        )
-    }
-
-
-    const removeTodo = (todoId: string) => {
-        setTodolists(todolists.filter(t => t.id !== todoId))
-        delete tasks[todoId]
+        dispatchTask(changeTaskStatusAC(todoId, taskId, isDone))
     }
 
 
@@ -115,10 +69,21 @@ function App() {
         // })
     }
 
+    const removeTodo = (todoId: string) => {
+        dispatchTodo(removeTodoAC(todoId))
+        delete tasks[todoId]
+    }
+
+    const addTodolist = (title: string) => {
+        dispatchTodo(addTodoAC(title))
+    }
+
+    const changeTodolists = (todoId: string, filter: FilterType) => {
+        dispatchTodo(changeTodoFilterAC(todoId, filter))
+    }
+
     const updateTodo = (todoId: string, title: string) => {
-        setTodolists(
-            todolists.map(el => el.id === todoId ? {...el, title} : el)
-        )
+        dispatchTodo(changeTodoTitleAC(todoId, title))
     }
     const lists = todolists.map(i => (
         <Grid item>
