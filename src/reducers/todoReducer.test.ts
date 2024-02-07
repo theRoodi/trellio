@@ -28,7 +28,7 @@ test('add todo', () => {
     const endState = todoReducer(startState, addTodoAC('title3'))
 
 
-    expect(endState[0].id).toBe('todo3')
+    expect(endState.length).toBe(3)
 })
 
 test('change todo title', () => {

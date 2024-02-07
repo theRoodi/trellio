@@ -8,10 +8,8 @@ export const todoReducer = (state: TodolistsType[], action: ActionType): Todolis
         case 'REMOVE-TODO':
             return state.filter(t => t.id !== action.payload.id)
         case 'ADD-TODO':
-            const id = 'todo3'
-
             const newTodo: TodolistsType = {
-                id,
+                id: action.payload.todoId,
                 title: action.payload.title,
                 filter: 'all'
             }
@@ -31,15 +29,15 @@ export const todoReducer = (state: TodolistsType[], action: ActionType): Todolis
 
 type ActionType = AddTodoType | RemoveTodoType | ChangeTodoTitleType | ChangeTodoFilterType
 
-type AddTodoType = ReturnType<typeof addTodoAC>
-type RemoveTodoType = ReturnType<typeof removeTodoAC>
+export type AddTodoType = ReturnType<typeof addTodoAC>
+export type RemoveTodoType = ReturnType<typeof removeTodoAC>
 type ChangeTodoTitleType = ReturnType<typeof changeTodoTitleAC>
 type ChangeTodoFilterType = ReturnType<typeof changeTodoFilterAC>
 
 export const addTodoAC = (title: string) => {
     return {
         type: 'ADD-TODO',
-        payload: {title}
+        payload: {title, todoId: new Date().getTime().toString()}
     } as const
 }
 

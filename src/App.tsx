@@ -22,6 +22,10 @@ export type TodolistsType = {
     filter: FilterType
 }
 
+export type TaskStateType = {
+    [key: string] : TaskType[]
+}
+
 
 function App() {
 
@@ -34,7 +38,7 @@ function App() {
     ])
 
 
-    const [tasks, dispatchTask] = useReducer<any>(tasksReducer, {
+    const [tasks, dispatchTask] = useReducer(tasksReducer, {
         [todoId1]: [
             {id: crypto.randomUUID(), isDone: false, title: 'HTML'},
             {id: crypto.randomUUID(), isDone: true, title: 'CSS'},
