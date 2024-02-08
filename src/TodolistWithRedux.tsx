@@ -7,36 +7,26 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import {SuperCheckbox} from './components/SuperCheckbox';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from './store';
 import {TodolistsType} from './AppWithRedux';
+import {addTodoAC, changeTodoFilterAC, changeTodoTitleAC, removeTodoAC} from './reducers/todoReducer';
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './reducers/tasksReducer';
 
 export type FilterType = 'all' | 'completed' | 'active'
 
 type Props = {
-    id: string
-    title: string
-    tasks: Array<TaskType>
-    filter: FilterType
-    removeTask: (todoId: string, taskId: string) => void
-    addTask: (todoId: string, title: string) => void
-    changeTaskStatus: (todoId: string, taskId: string, status: boolean) => void
-    changeTodolists: (todoId: string, filter: FilterType) => void
-    removeTodo: (todoId: string) => void
-    updateTask: (todoId: string, taskId: string, title: string) => void
-    updateTodo: (todoId: string, title: string) => void
+    todolist: TodolistsType
 }
 
-export const Todolist = (props: Props) => {
+export const TodolistWithRedux = ({todolist}: Props) => {
 
-    const todos = useSelector<AppRootStateType, TodolistsType[]>(state => state.todos)
 
-    const {
-        id, title, tasks, filter,
-        removeTask, addTask, changeTaskStatus, changeTodolists,
-        removeTodo, updateTask, updateTodo
-    } = props
+    const {id, title, filter} = todolist
 
+    const tasks = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[id])
+
+    const dispatch = useDispatch()
     const getFilteredTasks = (allTasks: Array<TaskType>, filterValue: FilterType): Array<TaskType> => {
         switch (filterValue) {
             case 'active':
@@ -51,31 +41,34 @@ export const Todolist = (props: Props) => {
     const filteredTasks: Array<TaskType> = getFilteredTasks(tasks, filter)
 
     const changeFilter = (nextFilterValue: FilterType) => {
-        changeTodolists(id, nextFilterValue)
+        dispatch(changeTodoFilterAC(id, nextFilterValue))
     }
 
     const deleteTodoHandler = () => {
-        removeTodo(id)
+        dispatch(removeTodoAC(id))
+    }
+    const updateTodoHandler = (title: string) => {
+        dispatch(changeTodoTitleAC(id, title))
     }
 
     const addTaskHandler = (title: string) => {
-        addTask(id, title)
+        dispatch(addTaskAC(id,title))
     }
     const updateTaskHandler = (title: string, taskId: string) => {
-        updateTask(id, taskId, title)
+        dispatch(changeTaskTitleAC(id, taskId, title))
     }
     const onChangeTaskStatus = (taskId: string, isDone: boolean) => {
-        changeTaskStatus(id, taskId, isDone)
+        dispatch(changeTaskStatusAC(id, taskId, isDone))
     }
 
 
     const listItems: Array<JSX.Element> = filteredTasks.map(task => {
             const onClickRemoveItem = () => {
-                removeTask(id, task.id)
+                dispatch(removeTaskAC(id, task.id))
             }
             return (
                 <li key={task.id}>
-                    <SuperCheckbox isDone={task.isDone} onClick={(isDone ) => onChangeTaskStatus(task.id ,isDone)}/>
+                    <SuperCheckbox isDone={task.isDone} onClick={(isDone) => onChangeTaskStatus(task.id, isDone)}/>
                     <EditableSpan title={task.title} onClick={(title) => updateTaskHandler(title, task.id)}/>
                     <IconButton onClick={onClickRemoveItem}>
                         <DeleteIcon/>
@@ -85,9 +78,6 @@ export const Todolist = (props: Props) => {
         }
     )
 
-    const updateTodoHandler = (title: string) => {
-        updateTodo(id, title)
-    }
 
     const tasksList: JSX.Element = tasks.length
         ? <ul>{listItems}</ul>
@@ -107,9 +97,12 @@ export const Todolist = (props: Props) => {
 
             {tasksList}
             <div>
-                <Button style={{marginRight: '10px'}} variant={filter === 'all' ? 'outlined' : 'contained'} onClick={() => changeFilter('all')} color="success">All</Button>
-                <Button style={{marginRight: '10px'}} variant={filter === 'active' ? 'outlined' : 'contained'} onClick={() => changeFilter('active')} color="primary">Active</Button>
-                <Button style={{marginRight: '10px'}} variant={filter === 'completed' ? 'outlined' : 'contained'} onClick={() => changeFilter('completed')} color="error">Completed</Button>
+                <Button style={{marginRight: '10px'}} variant={filter === 'all' ? 'outlined' : 'contained'}
+                        onClick={() => changeFilter('all')} color="success">All</Button>
+                <Button style={{marginRight: '10px'}} variant={filter === 'active' ? 'outlined' : 'contained'}
+                        onClick={() => changeFilter('active')} color="primary">Active</Button>
+                <Button style={{marginRight: '10px'}} variant={filter === 'completed' ? 'outlined' : 'contained'}
+                        onClick={() => changeFilter('completed')} color="error">Completed</Button>
             </div>
         </div>
     )

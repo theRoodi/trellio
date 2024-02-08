@@ -1,9 +1,11 @@
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, tasksReducer} from './tasksReducer';
 import {addTodoAC} from './todoReducer';
+import {TaskStateType} from '../App';
 
+let startState: TaskStateType
 
-test('remove task', () => {
-    const startState = {
+beforeEach(() => {
+    startState = {
         ['todoId1']: [
             {id: '1', isDone: false, title: 'HTML'},
             {id: '2', isDone: true, title: 'CSS'},
@@ -15,6 +17,10 @@ test('remove task', () => {
             {id: '3', isDone: false, title: 'JSx2'}
         ]
     }
+})
+
+test('remove task', () => {
+
 
     const endState = tasksReducer(startState, removeTaskAC('todoId1', '2'))
 
@@ -35,20 +41,6 @@ test('remove task', () => {
 })
 
 test('add task', () => {
-
-    const startState = {
-        ['todoId1']: [
-            {id: '1', isDone: false, title: 'HTML'},
-            {id: '2', isDone: true, title: 'CSS'},
-            {id: '3', isDone: false, title: 'JSx'}
-        ],
-        ['todoId2']: [
-            {id: '1', isDone: false, title: 'HTML2'},
-            {id: '2', isDone: true, title: 'CSS2'},
-            {id: '3', isDone: false, title: 'JSx2'}
-        ]
-    }
-
     const endState = tasksReducer(startState, addTaskAC('todoId1', 'React'))
 
 
@@ -60,20 +52,6 @@ test('add task', () => {
 })
 
 test('change task status', () => {
-
-    const startState = {
-        ['todoId1']: [
-            {id: '1', isDone: false, title: 'HTML'},
-            {id: '2', isDone: true, title: 'CSS'},
-            {id: '3', isDone: false, title: 'JSx'}
-        ],
-        ['todoId2']: [
-            {id: '1', isDone: false, title: 'HTML2'},
-            {id: '2', isDone: true, title: 'CSS2'},
-            {id: '3', isDone: false, title: 'JSx2'}
-        ]
-    }
-
     const endState = tasksReducer(startState, changeTaskStatusAC('todoId1', '2', true))
 
 

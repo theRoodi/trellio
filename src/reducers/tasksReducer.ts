@@ -1,8 +1,9 @@
 import {TaskStateType, TaskType} from '../App';
 import {AddTodoType, RemoveTodoType} from './todoReducer';
 
+const initialState:TaskStateType = {}
 
-export const tasksReducer = (state: TaskStateType, action: ActionType): TaskStateType => {
+export const tasksReducer = (state = initialState, action: ActionType): TaskStateType => {
     switch (action.type) {
         case 'ADD-TASK':
             const newTaskId = crypto.randomUUID()
