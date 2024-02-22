@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {TaskType} from './AppWithRedux';
 import {useDispatch} from 'react-redux';
-import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './reducers/tasksReducer';
+import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './state/tasksReducer';
 
 type Props = {
     task: TaskType

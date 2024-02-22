@@ -8,7 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import {SuperCheckbox} from './components/SuperCheckbox';
 import {useSelector} from 'react-redux';
-import {AppRootStateType} from './store';
+import {AppRootStateType} from './state/store';
 import {TodolistsType} from './AppWithRedux';
 
 export type FilterType = 'all' | 'completed' | 'active'

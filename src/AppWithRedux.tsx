@@ -6,9 +6,9 @@ import ButtonAppBar from './components/ButtonAppBar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import {addTodoAC} from './reducers/todoReducer';
+import {addTodoAC} from './state/todoReducer';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppRootStateType} from './store';
+import {AppRootStateType} from './state/store';
 import {TodolistWithRedux} from './TodolistWithRedux';
 
 

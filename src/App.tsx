@@ -6,8 +6,8 @@ import ButtonAppBar from './components/ButtonAppBar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import {addTaskAC, changeTaskStatusAC, removeTaskAC, tasksReducer} from './reducers/tasksReducer';
-import {addTodoAC, changeTodoFilterAC, changeTodoTitleAC, removeTodoAC, todoReducer} from './reducers/todoReducer';
+import {addTaskAC, changeTaskStatusAC, removeTaskAC, tasksReducer} from './state/tasksReducer';
+import {addTodoAC, changeTodoFilterAC, changeTodoTitleAC, removeTodoAC, todoReducer} from './state/todoReducer';
 
 
 export type TaskType = {
