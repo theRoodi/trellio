@@ -1,14 +1,14 @@
-import React, {memo, useCallback} from 'react';
+import React, {memo, useCallback, useEffect} from 'react';
 import {TaskType} from './App';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppRootStateType} from './state/store';
+import {AppRootStateType, useAppDispatch} from './state/store';
 import {TodolistsType} from './AppWithRedux';
 import {changeTodoFilterAC, changeTodoTitleAC, removeTodoAC} from './state/todoReducer';
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './state/tasksReducer';
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, getTasksTC, removeTaskAC} from './state/tasksReducer';
 import {ButtonMemo} from './components/ButtonMemo';
 import {TaskWithRedux} from './TaskWithRedux';
 import {Task} from './Task';
@@ -21,13 +21,16 @@ type Props = {
 
 export const TodolistWithRedux = memo(({todolist}: Props) => {
 
-    console.log('Todo')
-
     const {id, title, filter} = todolist
 
-    const tasks = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[id])
+    console.log('Todo')
+    const dispatch = useAppDispatch()
 
-    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(getTasksTC(id))
+    }, [])
+
+    const tasks = useSelector<AppRootStateType, TaskType[]>(state => state.tasks[id])
     const getFilteredTasks = (allTasks: Array<TaskType>, filterValue: FilterType): Array<TaskType> => {
         switch (filterValue) {
             case 'active':
