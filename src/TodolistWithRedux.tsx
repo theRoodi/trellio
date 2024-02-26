@@ -4,14 +4,21 @@ import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {AppRootStateType, useAppDispatch} from './state/store';
 import {TodolistsType} from './AppWithRedux';
 import {changeTodoFilterAC, changeTodoTitleAC, removeTodoAC} from './state/todoReducer';
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, getTasksTC, removeTaskAC} from './state/tasksReducer';
+import {
+    addTaskAC,
+    addTaskTC,
+    changeTaskStatusAC,
+    changeTaskTitleAC,
+    deleteTaskTC,
+    getTasksTC, updateTaskStatusTC
+} from './state/tasksReducer';
 import {ButtonMemo} from './components/ButtonMemo';
-import {TaskWithRedux} from './TaskWithRedux';
 import {Task} from './Task';
+import {TaskStatuses} from './api/todolist-api';
 
 export type FilterType = 'all' | 'completed' | 'active'
 
@@ -22,8 +29,6 @@ type Props = {
 export const TodolistWithRedux = memo(({todolist}: Props) => {
 
     const {id, title, filter} = todolist
-
-    console.log('Todo')
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -34,15 +39,21 @@ export const TodolistWithRedux = memo(({todolist}: Props) => {
     const getFilteredTasks = (allTasks: Array<TaskType>, filterValue: FilterType): Array<TaskType> => {
         switch (filterValue) {
             case 'active':
-                return allTasks.filter(task => !task.isDone)
+                return allTasks.filter(task => !task.completed)
             case 'completed':
-                return allTasks.filter(task => task.isDone)
+                return allTasks.filter(task => task.completed)
             default:
                 return allTasks
         }
     }
 
+    console.log('tasks' + ' ' + tasks)
+    console.log('filter' + ' ' + filter)
+
+
     const filteredTasks: Array<TaskType> = getFilteredTasks(tasks, filter)
+
+    console.log('filteredTasks' + ' ' + filteredTasks)
 
     const changeFilter = useCallback((nextFilterValue: FilterType) => {
         dispatch(changeTodoFilterAC(id, nextFilterValue))
@@ -54,21 +65,20 @@ export const TodolistWithRedux = memo(({todolist}: Props) => {
         dispatch(changeTodoTitleAC(id, title))
     }, [dispatch, id])
     const addTaskHandler = useCallback((title: string) => {
-        dispatch(addTaskAC(id, title))
+        dispatch(addTaskTC(id, title))
     }, [dispatch, id])
     const updateTaskHandler = useCallback((title: string, taskId: string) => {
         dispatch(changeTaskTitleAC(id, taskId, title))
     }, [dispatch, id])
-    const onChangeTaskStatus = useCallback((taskId: string, isDone: boolean) => {
-        dispatch(changeTaskStatusAC(id, taskId, isDone))
+    const onChangeTaskStatus = useCallback((taskId: string, isDone: TaskStatuses) => {
+        dispatch(updateTaskStatusTC (id, taskId, isDone))
     }, [dispatch, id])
     const onClickRemoveItem = useCallback((taskId: string) => {
-        dispatch(removeTaskAC(id, taskId))
-    }, [dispatch, id])
+        dispatch(deleteTaskTC(id, taskId))
+    }, [id])
 
 
     const listItems: Array<JSX.Element> = filteredTasks.map(task => {
-
             return (
                 <Task key={task.id}
                       task={task}

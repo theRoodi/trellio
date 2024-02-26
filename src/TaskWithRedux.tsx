@@ -5,7 +5,8 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {TaskType} from './AppWithRedux';
 import {useDispatch} from 'react-redux';
-import {changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './state/tasksReducer';
+import {changeTaskStatusAC, changeTaskTitleAC, deleteTaskTC, removeTaskAC} from './state/tasksReducer';
+import {useAppDispatch} from './state/store';
 
 type Props = {
     task: TaskType
@@ -15,9 +16,9 @@ type Props = {
 
 export const TaskWithRedux = memo(({task, todoId}: Props) => {
 
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
-    const removeHandler = () => dispatch(removeTaskAC(todoId, task.id))
+    const removeHandler = () => dispatch(deleteTaskTC(todoId, task.id))
     const changeTaskStatusHandler = (isDone: boolean) => {
         dispatch(changeTaskStatusAC(todoId, task.id, isDone))
     }
@@ -28,7 +29,7 @@ export const TaskWithRedux = memo(({task, todoId}: Props) => {
 
     return (
         <li key={task.id}>
-            <SuperCheckbox isDone={task.isDone} onClick={changeTaskStatusHandler}/>
+            <SuperCheckbox isDone={task.completed} onClick={changeTaskStatusHandler}/>
             <EditableSpan title={task.title} onClick={updateTaskTitleHandler}/>
             <IconButton onClick={removeHandler}>
                 <DeleteIcon/>

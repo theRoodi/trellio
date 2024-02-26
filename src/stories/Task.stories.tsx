@@ -12,7 +12,7 @@ const meta: Meta<typeof Task> = {
     tags: ['autodocs'],
     argTypes: {},
     args: {
-        task: {id: 'qwe', isDone: true, title: 'titleIsDone'},
+        task: {id: 'qwe', completed: true, title: 'titleIsDone'},
         onChangeTaskStatus: action('onChangeTaskStatus'),
         updateTaskHandler: action('updateTaskHandler'),
         onClickRemoveItem: action('onClickRemoveItem')
@@ -25,15 +25,15 @@ type Story = StoryObj<typeof Task>;
 export const TaskIsDoneStory: Story = {};
 export const TaskIsNotDoneStory: Story = {
     args: {
-        task: {id: 'qw222e', isDone: false, title: 'titleIsDone2'}
+        task: {id: 'qw222e', completed: false, title: 'titleIsDone2'}
     }
 };
 
 const TaskToggle = () => {
-    const [task, setTask] = useState({id: 'qw222e', isDone: false, title: 'titleIsDone2'})
+    const [task, setTask] = useState({id: 'qw222e', completed: false, title: 'titleIsDone2'})
 
     return <Task task={task}
-                 onChangeTaskStatus={() => setTask({...task, isDone: !task.isDone})}
+                 onChangeTaskStatus={() => setTask({...task, completed: !task.completed})}
                  updateTaskHandler={(title, taskId) => setTask({...task, title})}
                  onClickRemoveItem={action('onClickRemoveItem')}/>
 }

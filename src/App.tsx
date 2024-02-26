@@ -6,13 +6,14 @@ import ButtonAppBar from './components/ButtonAppBar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import {addTaskAC, changeTaskStatusAC, removeTaskAC, tasksReducer} from './state/tasksReducer';
+import {addTaskAC, addTaskTC, changeTaskStatusAC, removeTaskAC, tasksReducer} from './state/tasksReducer';
 import {addTodoAC, changeTodoFilterAC, changeTodoTitleAC, removeTodoAC, todoReducer} from './state/todoReducer';
+import {TaskResponseType} from './api/todolist-api';
 
 
 export type TaskType = {
     id: string
-    isDone: boolean
+    completed: boolean
     title: string
 }
 
@@ -23,7 +24,7 @@ export type TodolistsType = {
 }
 
 export type TaskStateType = {
-    [key: string] : TaskType[]
+    [key: string] : TaskResponseType[]
 }
 
 
@@ -38,29 +39,29 @@ function App() {
     ])
 
 
-    const [tasks, dispatchTask] = useReducer(tasksReducer, {
-        [todoId1]: [
-            {id: crypto.randomUUID(), isDone: false, title: 'HTML'},
-            {id: crypto.randomUUID(), isDone: true, title: 'CSS'},
-            {id: crypto.randomUUID(), isDone: false, title: 'JSx'}
-        ],
-        [todoId2]: [
-            {id: crypto.randomUUID(), isDone: false, title: 'HTML2'},
-            {id: crypto.randomUUID(), isDone: true, title: 'CSS2'},
-            {id: crypto.randomUUID(), isDone: false, title: 'JSx2'}
-        ]
-    })
+    // const [tasks, dispatchTask] = useReducer(tasksReducer, {
+    //     [todoId1]: [
+    //         {id: crypto.randomUUID(), completed: false, title: 'HTML'},
+    //         {id: crypto.randomUUID(), completed: true, title: 'CSS'},
+    //         {id: crypto.randomUUID(), completed: false, title: 'JSx'}
+    //     ],
+    //     [todoId2]: [
+    //         {id: crypto.randomUUID(), completed: false, title: 'HTML2'},
+    //         {id: crypto.randomUUID(), completed: true, title: 'CSS2'},
+    //         {id: crypto.randomUUID(), completed: false, title: 'JSx2'}
+    //     ]
+    // })
+    //
+    // const removeTask = (todoId: string, taskId: string) => {
+    //     dispatchTask(removeTaskAC(todoId, taskId))
+    // }
 
-    const removeTask = (todoId: string, taskId: string) => {
-        dispatchTask(removeTaskAC(todoId, taskId))
-    }
-
-    const addTask = (todoId: string, title: string) => {
-        dispatchTask(addTaskAC(todoId, title))
-    }
+    // const addTask = (todoId: string, title: string) => {
+    //     dispatchTask(addTaskTC(todoId, title))
+    // }
 
     const changeTaskStatus = (todoId: string, taskId: string, isDone: boolean) => {
-        dispatchTask(changeTaskStatusAC(todoId, taskId, isDone))
+        // dispatchTask(changeTaskStatusAC(todoId, taskId, isDone))
     }
 
 
@@ -75,7 +76,7 @@ function App() {
 
     const removeTodo = (todoId: string) => {
         dispatchTodo(removeTodoAC(todoId))
-        delete tasks[todoId]
+        // delete tasks[todoId]
     }
 
     const addTodolist = (title: string) => {
@@ -95,10 +96,10 @@ function App() {
                 <Todolist key={i.id}
                           id={i.id}
                           title={i.title}
-                          tasks={tasks[i.id]}
+                          // tasks={tasks[i.id]}
                           filter={i.filter}
-                          removeTask={removeTask}
-                          addTask={addTask}
+                          // removeTask={removeTask}
+                          // addTask={addTask}
                           changeTaskStatus={changeTaskStatus}
                           changeTodolists={changeTodolists}
                           removeTodo={removeTodo}

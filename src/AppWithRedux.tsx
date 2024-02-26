@@ -7,14 +7,13 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {addTodoAC, setTodoTC} from './state/todoReducer';
-import {useSelector} from 'react-redux';
-import {AppRootStateType, useAppDispatch, useAppSelector} from './state/store';
+import {useAppDispatch, useAppSelector} from './state/store';
 import {TodolistWithRedux} from './TodolistWithRedux';
 
 
 export type TaskType = {
     id: string
-    isDone: boolean
+    completed: boolean
     title: string
 }
 
