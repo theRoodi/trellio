@@ -1,59 +1,51 @@
-import React, {ChangeEvent, KeyboardEvent, memo, useState} from 'react';
-import Button from '@mui/material/Button';
+import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
 import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import { AddBox } from '@mui/icons-material';
 
-export type AddItemFormProps = {
-    onClick: (itemTitle: string) => void
+type AddItemFormPropsType = {
+    addItem: (title: string) => void
 }
 
+export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
+    console.log('AddItemForm called')
 
-export const AddItemForm = memo((props: AddItemFormProps) => {
-    const [itemTitle, setItemTitle] = useState('')
-    const [inputError, setInputError] = useState<string | null>(null)
+    let [title, setTitle] = useState('')
+    let [error, setError] = useState<string | null>(null)
 
-    const onAddItem = () => {
-        const trimmedTitle = itemTitle.trim()
-        if (trimmedTitle !== '') {
-            props.onClick(itemTitle)
+    const addItem = () => {
+        if (title.trim() !== '') {
+            props.addItem(title);
+            setTitle('');
         } else {
-            setInputError('Title is required')
+            setError('Title is required');
         }
-        setItemTitle('')
     }
 
-    const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
-        inputError && setInputError(null)
-        setItemTitle(e.currentTarget.value)
-    }
-    const onKeyDownAddTask = (e: KeyboardEvent<HTMLInputElement>) => e.key === 'Enter' && onAddItem()
-    const isAddBtnDisabled = !itemTitle || itemTitle.length >= 15
-
-
-    const userMessage = inputError
-        ? <span style={{color: 'red'}}>Need minimum 1 symbol!</span>
-        : itemTitle?.length < 15
-            ? <span>Enter new title</span>
-            : <span style={{color: 'red'}}>Title is too long!</span>
-
-    const styleBtn = {
-        maxWidth: '40px',
-        maxHeight: '40px',
-        minWidth: '40px',
-        minHeight: '40px',
-        marginLeft: '10px'
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTitle(e.currentTarget.value)
     }
 
-    return (
-        <div>
-            <TextField id="outlined-basic"
-                       label={userMessage}
-                       variant="outlined"
-                       value={itemTitle} onChange={onChangeTitle}
-                       onKeyDown={onKeyDownAddTask}
-                       className={inputError ? 'input-error' : ''}
-                       size={'small'}
-            />
-            <Button style={styleBtn} onClick={onAddItem} disabled={isAddBtnDisabled} variant="contained">+</Button>
-        </div>
-    )
+    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (error !== null) {
+            setError(null);
+        }
+        if (e.charCode === 13) {
+            addItem();
+        }
+    }
+
+    return <div>
+        <TextField variant="outlined"
+                   error={!!error}
+                   value={title}
+                   onChange={onChangeHandler}
+                   onKeyPress={onKeyPressHandler}
+                   label="Title"
+                   helperText={error}
+        />
+        <IconButton color="primary" onClick={addItem}>
+            <AddBox/>
+        </IconButton>
+    </div>
 })
