@@ -1,6 +1,6 @@
-import {v1} from 'uuid';
 import {todolistsAPI, TodolistType} from '../api/todolists-api'
 import {Dispatch} from 'redux';
+import {setStatusAC, SetStatusType} from '../app/app-reducer';
 
 export type RemoveTodolistActionType = {
     type: 'REMOVE-TODOLIST',
@@ -24,7 +24,7 @@ export type ChangeTodolistFilterActionType = {
 export type SetTodosType = ReturnType<typeof setTodosAC>
 
 type ActionsType = RemoveTodolistActionType | AddTodolistActionType
-    | ChangeTodolistTitleActionType
+    | ChangeTodolistTitleActionType | SetStatusType
     | ChangeTodolistFilterActionType | SetTodosType
 
 const initialState: Array<TodolistDomainType> = [
@@ -87,19 +87,33 @@ export const setTodosAC = (todos: TodolistType[]) => {
 }
 export const setTodosTC = () => (dispatch: Dispatch) => {
     todolistsAPI.getTodolists()
-        .then(res => dispatch(setTodosAC(res.data)))
+        .then(res => {
+            dispatch(setTodosAC(res.data))
+        })
 }
 export const addTodoTC = (title: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAC('loading'))
     todolistsAPI.createTodolist(title)
-        .then(res => dispatch(addTodolistAC(res.data.data.item)))
+        .then(res => {
+            dispatch(addTodolistAC(res.data.data.item))
+            dispatch(setStatusAC('successed'))
+        })
 }
 
 export const removeTodoTC = (todoId: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAC('loading'))
     todolistsAPI.deleteTodolist(todoId)
-        .then(res => dispatch(removeTodolistAC(todoId)))
+        .then(res => {
+            dispatch(removeTodolistAC(todoId))
+            dispatch(setStatusAC('successed'))
+        })
 }
 
 export const changeTodolistTitleTC = (todoId: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAC('loading'))
     todolistsAPI.updateTodolist(todoId, title)
-        .then(res => dispatch(changeTodolistTitleAC(todoId, title)))
+        .then(res => {
+            dispatch(changeTodolistTitleAC(todoId, title))
+            dispatch(setStatusAC('successed'))
+        })
 }
