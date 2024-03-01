@@ -21,7 +21,7 @@ import {
     setTodosTC,
     TodolistDomainType
 } from '../state/todolists-reducer'
-import {addTaskTC, removeTaskTC, updateTaskStatusTC, updateTaskTitleTC} from '../state/tasks-reducer';
+import {addTaskTC, removeTaskTC, updateTaskTC} from '../state/tasks-reducer';
 import {useAppDispatch, useAppSelector} from '../state/store';
 import {TaskStatuses, TaskType} from '../api/todolists-api'
 import {RequestStatusType} from './app-reducer';
@@ -53,11 +53,11 @@ function App() {
     }, []);
 
     const changeStatus = useCallback(function (taskId: string, status: TaskStatuses, todoId: string) {
-        dispatch(updateTaskStatusTC(todoId, taskId, status));
+        dispatch(updateTaskTC(taskId, {status}, todoId));
     }, []);
 
     const changeTaskTitle = useCallback(function (taskId: string, title: string, todoId: string) {
-        dispatch(updateTaskTitleTC(todoId, taskId, title));
+        dispatch(updateTaskTC(taskId, {title}, todoId));
     }, []);
 
     const changeFilter = useCallback(function (value: FilterValuesType, todoId: string) {
@@ -79,7 +79,7 @@ function App() {
 
     return (
         <div className="App">
-            <ErrorSnackbar />
+            <ErrorSnackbar/>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
@@ -90,7 +90,7 @@ function App() {
                     </Typography>
                     <Button color="inherit">Login</Button>
                 </Toolbar>
-                {status === 'loading' && <LinearProgress color="secondary" />}
+                {status === 'loading' && <LinearProgress color="secondary"/>}
             </AppBar>
             <Container fixed>
                 <Grid container style={{padding: '20px'}}>
@@ -107,6 +107,7 @@ function App() {
                                         id={tl.id}
                                         title={tl.title}
                                         tasks={allTodolistTasks}
+                                        entityStatus={tl.entityStatus}
                                         removeTask={removeTask}
                                         changeFilter={changeFilter}
                                         addTask={addTask}
