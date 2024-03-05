@@ -1,8 +1,8 @@
-import {AddTodolistActionType, RemoveTodolistActionType, SetTodosType} from './todolists-reducer';
+import {AddTodolistActionType, ClearDataType, RemoveTodolistActionType, SetTodosType} from './todolists-reducer';
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from '../api/todolists-api'
 import {Dispatch} from 'redux';
 import {AppRootStateType} from './store';
-import {setAppErrorAC, SetErrorType, setAppStatusAC, SetStatusType} from '../app/app-reducer';
+import {setAppStatusAC, SetErrorType, SetStatusType} from '../app/app-reducer';
 import {handleServerAppError, handleServerNetworkError} from '../utils/error-utils';
 
 export type RemoveTaskActionType = {
@@ -29,8 +29,9 @@ type ActionsType = RemoveTaskActionType
     | SetTaskType
     | SetStatusType
     | SetErrorType
+    | ClearDataType
 
-enum RESULT_CODE {
+export enum RESULT_CODE {
     SUCCEEDED = 0,
     FAILED = 1,
     RECAPTCHA_FAILED = 2
@@ -94,6 +95,8 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
             delete copyState[action.id];
             return copyState;
         }
+        case 'CLEAR-DATA':
+            return {}
         default:
             return state;
     }
@@ -145,7 +148,7 @@ export const addTaskTC = (todoId: string, title: string) => (dispatch: Dispatch)
                 dispatch(addTaskAC(res.data.data.item))
                 dispatch(setAppStatusAC('successed'))
             } else {
-                handleServerAppError<{item:TaskType}>(res.data, dispatch)
+                handleServerAppError<{ item: TaskType }>(res.data, dispatch)
             }
         })
         .catch(e => {
