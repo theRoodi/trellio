@@ -11,17 +11,20 @@ import {
   setTodosTC,
   todoActions,
   TodolistDomainType,
-} from "state/todolists-reducer";
-import { addTaskTC, removeTaskTC, updateTaskTC } from "state/tasks-reducer";
+} from "features/TodolistsList/Todolist/todolists-reducer";
+import { addTaskTC, removeTaskTC, updateTaskTC } from "features/TodolistsList/Todolist/Task/tasks-reducer";
 import { TaskStatuses } from "api/todolists-api";
-import { AddItemForm } from "AddItemForm";
-import { Todolist } from "Todolist";
+import { AddItemForm } from "components/AddItemForm/AddItemForm";
+import { Todolist } from "features/TodolistsList/Todolist/Todolist";
 import { Navigate } from "react-router-dom";
+import { isLoggedInSelector } from "features/Login/auth.selector";
+import { todoSelector } from "features/TodolistsList/Todolist/todo.selector";
+import { taskSelector } from "features/TodolistsList/Todolist/Task/task.selector";
 
 export const TodolistsList = () => {
-  const todo = useAppSelector<Array<TodolistDomainType>>((state) => state.todolists);
-  const tasks = useAppSelector<TasksStateType>((state) => state.tasks);
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const todo = useAppSelector<Array<TodolistDomainType>>(todoSelector);
+  const tasks = useAppSelector<TasksStateType>(taskSelector);
+  const isLoggedIn = useAppSelector(isLoggedInSelector);
   const dispatch = useAppDispatch();
 
   useEffect(() => {

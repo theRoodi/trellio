@@ -1,10 +1,10 @@
 import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from "api/todolists-api";
 import { Dispatch } from "redux";
-import { AppRootStateType } from "./store";
+import { AppRootStateType } from "state/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app-reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { todoActions } from "state/todolists-reducer";
+import { todoActions } from "features/TodolistsList/Todolist/todolists-reducer";
 export enum RESULT_CODE {
   SUCCEEDED = 0,
   FAILED = 1,
@@ -50,6 +50,9 @@ const slice = createSlice({
     },
     setTask: (state, action: PayloadAction<{ todoId: string; tasks: TaskType[] }>) => {
       state[action.payload.todoId] = action.payload.tasks;
+    },
+    clearTasks: (state, action) => {
+      return {};
     },
   },
   extraReducers: (builder) => {

@@ -4,7 +4,6 @@ import { appActions } from "app/app-reducer";
 
 type ErrorUtilsDispatchType = Dispatch;
 
-// generic function
 export const handleServerAppError = <T>(data: ResponseType<T>, dispatch: ErrorUtilsDispatchType) => {
   if (data.messages.length) {
     dispatch(appActions.setAppError({ error: data.messages[0] }));

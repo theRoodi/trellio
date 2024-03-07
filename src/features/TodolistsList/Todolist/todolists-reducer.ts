@@ -2,7 +2,7 @@ import { todolistsAPI, TodolistType } from "api/todolists-api";
 import { Dispatch } from "redux";
 import { appActions, RequestStatusType } from "app/app-reducer";
 import { handleServerNetworkError } from "utils/error-utils";
-import { getTasksTC } from "./tasks-reducer";
+import { getTasksTC } from "features/TodolistsList/Todolist/Task/tasks-reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type FilterValuesType = "all" | "active" | "completed";

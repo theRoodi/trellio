@@ -17,15 +17,17 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { TodolistsList } from "features/TodolistsList/TodolistsList";
 import { logoutTC, meTC } from "features/Login/authReducer";
 import CircularProgress from "@mui/material/CircularProgress";
+import { isInitializedSelector } from "app/app.selector";
+import { isLoggedInSelector, statusSelector } from "features/Login/auth.selector";
 
 export type TasksStateType = {
   [key: string]: Array<TaskType>;
 };
 
 function App() {
-  const status = useAppSelector<RequestStatusType>((state) => state.app.status);
-  const isInitialized = useAppSelector((state) => state.app.isInitialized);
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const status = useAppSelector<RequestStatusType>(statusSelector);
+  const isInitialized = useAppSelector(isInitializedSelector);
+  const isLoggedIn = useAppSelector(isLoggedInSelector);
 
   const dispatch = useAppDispatch();
 
