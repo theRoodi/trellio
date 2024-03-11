@@ -8,17 +8,17 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Menu } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "state/store";
-import { TaskType } from "api/todolists-api";
+import { useAppDispatch, useAppSelector } from "app/state/store";
+import { TaskType } from "features/TodolistsList/api/todolists-api";
 import { RequestStatusType } from "./app-reducer";
-import { ErrorSnackbar } from "components/ErrorSnackbar/ErrorSnackbar";
-import { Login } from "features/Login/Login";
+import { ErrorSnackbar } from "common/components";
+import { Login } from "features/auth/ui/Login/Login";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { TodolistsList } from "features/TodolistsList/TodolistsList";
-import { logoutTC, meTC } from "features/Login/authReducer";
+import { logoutTC, meTC } from "features/auth/model/authReducer";
 import CircularProgress from "@mui/material/CircularProgress";
 import { isInitializedSelector } from "app/app.selector";
-import { isLoggedInSelector, statusSelector } from "features/Login/auth.selector";
+import { isLoggedInSelector, statusSelector } from "features/auth/model/auth.selector";
 
 export type TasksStateType = {
   [key: string]: Array<TaskType>;

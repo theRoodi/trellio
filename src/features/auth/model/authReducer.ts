@@ -1,11 +1,12 @@
 import { appActions } from "app/app-reducer";
-import { authAPI } from "api/todolists-api";
-import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
-import { LoginDataType } from "./Login";
+import { handleServerNetworkError } from "common/utils/handleServerNetworkError";
+import { LoginDataType } from "features/auth/ui/Login/Login";
 import { todoActions } from "features/TodolistsList/Todolist/todolists-reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "state/store";
+import { AppThunk } from "app/state/store";
 import { tasksActions } from "features/TodolistsList/Todolist/Task/tasks-reducer";
+import { handleServerAppError } from "common/utils";
+import { authAPI } from "features/auth/api/authApi";
 
 const slice = createSlice({
   name: "auth",

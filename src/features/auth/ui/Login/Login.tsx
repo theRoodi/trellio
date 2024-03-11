@@ -7,11 +7,11 @@ import FormGroup from "@mui/material/FormGroup";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useAppDispatch, useAppSelector } from "../../state/store";
+import { useAppDispatch, useAppSelector } from "app/state/store";
 import { useFormik } from "formik";
-import { loginTC } from "./authReducer";
+import { loginTC } from "features/auth/model/authReducer";
 import { Navigate } from "react-router-dom";
-import { isLoggedInSelector } from "features/Login/auth.selector";
+import { isLoggedInSelector } from "features/auth/model/auth.selector";
 
 type FormikErrorType = {
   email?: string;

@@ -1,9 +1,9 @@
-import { todolistsAPI, TodolistType } from "api/todolists-api";
+import { todolistsAPI, TodolistType } from "features/TodolistsList/api/todolists-api";
 import { Dispatch } from "redux";
 import { appActions, RequestStatusType } from "app/app-reducer";
-import { handleServerNetworkError } from "utils/error-utils";
-import { getTasksTC } from "features/TodolistsList/Todolist/Task/tasks-reducer";
+import { handleServerNetworkError } from "common/utils/handleServerNetworkError";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { tasksThunks } from "features/TodolistsList/Todolist/Task/tasks-reducer";
 
 export type FilterValuesType = "all" | "active" | "completed";
 export type TodolistDomainType = TodolistType & {
@@ -72,7 +72,7 @@ export const setTodosTC = () => (dispatch: any) => {
     })
     .then((todos) => {
       todos.forEach((tl) => {
-        dispatch(getTasksTC(tl.id));
+        dispatch(tasksThunks.getTasks(tl.id));
       });
     })
     .catch((e) => {
