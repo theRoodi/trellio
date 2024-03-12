@@ -4,7 +4,7 @@ import { LoginDataType } from "features/auth/ui/Login/Login";
 import { todoActions } from "features/TodolistsList/Todolist/todolists-reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "app/state/store";
-import { tasksActions } from "features/TodolistsList/Todolist/Task/tasks-reducer";
+import { RESULT_CODE, tasksActions } from "features/TodolistsList/Todolist/Task/tasks-reducer";
 import { handleServerAppError } from "common/utils";
 import { authAPI } from "features/auth/api/authApi";
 
@@ -27,7 +27,7 @@ export const meTC = (): AppThunk => async (dispatch) => {
 
   try {
     const res = await authAPI.me();
-    if (res.data.resultCode === 0) {
+    if (res.data.resultCode === RESULT_CODE.SUCCEEDED) {
       dispatch(authActions.setIsLoggedIn({ isLoggedIn: true }));
       dispatch(appActions.setAppStatus({ status: "successed" }));
     } else {
@@ -47,7 +47,7 @@ export const loginTC =
 
     try {
       const res = await authAPI.login(loginData);
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === RESULT_CODE.SUCCEEDED) {
         dispatch(authActions.setIsLoggedIn({ isLoggedIn: true }));
         dispatch(appActions.setAppStatus({ status: "successed" }));
       } else {
@@ -63,7 +63,7 @@ export const logoutTC = (): AppThunk => async (dispatch) => {
 
   try {
     const res = await authAPI.logout();
-    if (res.data.resultCode === 0) {
+    if (res.data.resultCode === RESULT_CODE.SUCCEEDED) {
       dispatch(authActions.setIsLoggedIn({ isLoggedIn: false }));
       dispatch(appActions.setAppStatus({ status: "successed" }));
       dispatch(todoActions.clearTodosData({}));

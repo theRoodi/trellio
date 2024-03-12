@@ -5,9 +5,10 @@ import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import { Delete } from "@mui/icons-material";
 import { Task } from "features/TodolistsList/Todolist/Task/Task";
-import { TaskStatuses, TaskType } from "features/TodolistsList/api/todolists-api";
 import { FilterValuesType } from "features/TodolistsList/Todolist/todolists-reducer";
 import { RequestStatusType } from "app/app-reducer";
+import { TaskStatuses } from "common/enums/enum";
+import { TaskType } from "features/TodolistsList/api/todolists-api";
 
 type PropsType = {
   id: string;

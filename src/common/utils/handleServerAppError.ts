@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
-import { ResponseType } from "features/TodolistsList/api/todolists-api";
 import { appActions } from "app/app-reducer";
+import { ResponseType } from "types/responce.types";
 
 type ErrorUtilsDispatchType = Dispatch;
 
