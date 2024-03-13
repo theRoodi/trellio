@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { instance } from "common/api";
 import { UpdateDomainTaskModelType } from "features/TodolistsList/Todolist/Task/tasks-reducer";
 import { TaskPriorities, TaskStatuses } from "common/enums/enum";
-import { ResponseType } from "types/responce.types";
+import { BaseResponseType } from "types/responce.types";
 // api
 
 export const todolistsAPI = {
@@ -11,34 +11,36 @@ export const todolistsAPI = {
   },
   createTodolist(title: string) {
     return instance.post<
-      ResponseType<{ item: TodolistType }>,
-      AxiosResponse<ResponseType<{ item: TodolistType }>>,
+      BaseResponseType<{ item: TodolistType }>,
+      AxiosResponse<BaseResponseType<{ item: TodolistType }>>,
       { title: string }
     >("todo-lists", { title });
   },
   deleteTodolist(id: string) {
-    return instance.delete<ResponseType>(`todo-lists/${id}`);
+    return instance.delete<BaseResponseType>(`todo-lists/${id}`);
   },
   updateTodolist(id: string, title: string) {
-    return instance.put<ResponseType, AxiosResponse<ResponseType>, { title: string }>(`todo-lists/${id}`, { title });
+    return instance.put<BaseResponseType, AxiosResponse<BaseResponseType>, { title: string }>(`todo-lists/${id}`, {
+      title,
+    });
   },
   getTasks(todolistId: string) {
     return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`);
   },
   deleteTask(todolistId: string, taskId: string) {
-    return instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`);
+    return instance.delete<BaseResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`);
   },
   createTask(args: CreateTaskArgsType) {
     return instance.post<
-      ResponseType<{ item: TaskType }>,
-      AxiosResponse<ResponseType<{ item: TaskType }>>,
+      BaseResponseType<{ item: TaskType }>,
+      AxiosResponse<BaseResponseType<{ item: TaskType }>>,
       { title: string }
     >(`todo-lists/${args.todolistId}/tasks`, { title: args.title });
   },
   updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
     return instance.put<
-      ResponseType<{ item: TaskType }>,
-      AxiosResponse<ResponseType<{ item: TaskType }>>,
+      BaseResponseType<{ item: TaskType }>,
+      AxiosResponse<BaseResponseType<{ item: TaskType }>>,
       UpdateTaskModelType
     >(`todo-lists/${todolistId}/tasks/${taskId}`, model);
   },

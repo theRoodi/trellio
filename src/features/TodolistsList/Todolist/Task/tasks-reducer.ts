@@ -12,6 +12,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { todoActions, todoThunks } from "features/TodolistsList/Todolist/todolists-reducer";
 import { createAppAsyncThunk, handleServerAppError } from "common/utils";
 import { TaskPriorities, TaskStatuses } from "common/enums/enum";
+import { thunkTryCatch } from "common/utils/thunk-try-catch";
 
 export enum RESULT_CODE {
   SUCCEEDED = 0,
@@ -97,21 +98,16 @@ export const addTask = createAppAsyncThunk<{ task: TaskType }, CreateTaskArgsTyp
   `${slice.name}/addTask`,
   async (args, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-    try {
-      dispatch(appActions.setAppStatus({ status: "loading" }));
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await todolistsAPI.createTask(args);
       if (res.data.resultCode === RESULT_CODE.SUCCEEDED) {
         const task = res.data.data.item;
-        dispatch(appActions.setAppStatus({ status: "successed" }));
         return { task };
       } else {
-        handleServerAppError<{ item: TaskType }>(res.data, dispatch);
+        handleServerAppError(res.data, dispatch);
         return rejectWithValue(null);
       }
-    } catch (e) {
-      handleServerNetworkError(e, dispatch);
-      return rejectWithValue(null);
-    }
+    });
   },
 );
 

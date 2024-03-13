@@ -15,10 +15,11 @@ import { ErrorSnackbar } from "common/components";
 import { Login } from "features/auth/ui/Login/Login";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { TodolistsList } from "features/TodolistsList/TodolistsList";
-import { logoutTC, meTC } from "features/auth/model/authReducer";
 import CircularProgress from "@mui/material/CircularProgress";
 import { isInitializedSelector } from "app/app.selector";
 import { isLoggedInSelector, statusSelector } from "features/auth/model/auth.selector";
+import { authThunks } from "features/auth/model/authReducer";
+import { useActions } from "app/hooks/useActions";
 
 export type TasksStateType = {
   [key: string]: Array<TaskType>;
@@ -28,11 +29,10 @@ function App() {
   const status = useAppSelector<RequestStatusType>(statusSelector);
   const isInitialized = useAppSelector(isInitializedSelector);
   const isLoggedIn = useAppSelector(isLoggedInSelector);
-
-  const dispatch = useAppDispatch();
+  const { me, logout } = useActions(authThunks);
 
   useEffect(() => {
-    dispatch(meTC());
+    me();
   }, []);
 
   if (!isInitialized) {
@@ -43,8 +43,8 @@ function App() {
     );
   }
 
-  const logout = () => {
-    dispatch(logoutTC());
+  const logoutHandler = () => {
+    logout();
   };
 
   return (
@@ -57,7 +57,7 @@ function App() {
           </IconButton>
           <Typography variant="h6">News</Typography>
           {isLoggedIn && (
-            <Button color="inherit" onClick={logout}>
+            <Button color="inherit" onClick={logoutHandler}>
               logout
             </Button>
           )}
