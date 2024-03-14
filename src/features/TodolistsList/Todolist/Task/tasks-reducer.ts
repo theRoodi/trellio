@@ -76,7 +76,7 @@ const slice = createSlice({
       });
   },
 });
-
+//default thunk
 export const getTasks = createAppAsyncThunk<{ tasks: TaskType[]; todoId: string }, string>(
   `${slice.name}/getTasks`,
   async (todoId: string, thunkAPI) => {
@@ -94,6 +94,7 @@ export const getTasks = createAppAsyncThunk<{ tasks: TaskType[]; todoId: string 
   },
 );
 
+//thunk with using custom hook
 export const addTask = createAppAsyncThunk<{ task: TaskType }, CreateTaskArgsType>(
   `${slice.name}/addTask`,
   async (args, thunkAPI) => {
@@ -115,14 +116,15 @@ export const removeTask = createAppAsyncThunk<RemoveTaskArg, RemoveTaskArg>(
   `${slice.name}/removeTask`,
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-    try {
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await todolistsAPI.deleteTask(arg.todoId, arg.taskId);
-      dispatch(appActions.setAppStatus({ status: "successed" }));
-      return arg;
-    } catch (e) {
-      handleServerNetworkError(e, dispatch);
-      return rejectWithValue(null);
-    }
+      if (res.data.resultCode === RESULT_CODE.SUCCEEDED) {
+        return arg;
+      } else {
+        handleServerAppError(res.data, dispatch);
+        return rejectWithValue(null);
+      }
+    });
   },
 );
 
@@ -130,7 +132,7 @@ export const updateTask = createAppAsyncThunk<UpdateTasksArg, UpdateTasksArg>(
   `${slice.name}/updateTask`,
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue, getState } = thunkAPI;
-    try {
+    return thunkTryCatch(thunkAPI, async () => {
       const state = getState();
       const task = state.tasks[arg.todolistId].find((t) => t.id === arg.taskId);
       if (!task) {
@@ -155,10 +157,7 @@ export const updateTask = createAppAsyncThunk<UpdateTasksArg, UpdateTasksArg>(
         handleServerAppError(res.data, dispatch);
         return rejectWithValue(null);
       }
-    } catch (e) {
-      handleServerNetworkError(e, dispatch);
-      return rejectWithValue(null);
-    }
+    });
   },
 );
 export const tasksReducer = slice.reducer;

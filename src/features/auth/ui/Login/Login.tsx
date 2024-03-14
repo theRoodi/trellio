@@ -60,7 +60,6 @@ export const Login = () => {
             return formikHelpers.setFieldError(f.field, f.error);
           });
         });
-      formik.resetForm();
     },
   });
 
@@ -85,8 +84,7 @@ export const Login = () => {
                 helperText={formik.touched.email && formik.errors.email}
                 {...formik.getFieldProps("email")}
               />
-              {/*{formik.touched.email && formik.errors.email &&*/}
-              {/*    <div style={{color: 'red'}}>{formik.errors.email}</div>}*/}
+
               <TextField
                 type="password"
                 label="Password"

@@ -6,6 +6,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { RESULT_CODE, tasksActions } from "features/TodolistsList/Todolist/Task/tasks-reducer";
 import { createAppAsyncThunk, handleServerAppError } from "common/utils";
 import { authAPI } from "features/auth/api/authApi";
+import { thunkTryCatch } from "common/utils/thunk-try-catch";
 
 const slice = createSlice({
   name: "auth",
@@ -51,21 +52,15 @@ export const login = createAppAsyncThunk<{ isLoggedIn: boolean }, LoginDataType>
   `${slice.name}/login`,
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-    dispatch(appActions.setAppStatus({ status: "loading" }));
-
-    try {
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await authAPI.login(arg);
       if (res.data.resultCode === RESULT_CODE.SUCCEEDED) {
-        dispatch(appActions.setAppStatus({ status: "successed" }));
         return { isLoggedIn: true };
       } else {
         handleServerAppError(res.data, dispatch, false);
         return rejectWithValue(res.data);
       }
-    } catch (e) {
-      handleServerNetworkError(e, dispatch);
-      return rejectWithValue(null);
-    }
+    });
   },
 );
 
@@ -73,12 +68,9 @@ export const logout = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
   `${slice.name}/logout`,
   async (_, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-    dispatch(appActions.setAppStatus({ status: "loading" }));
-
-    try {
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await authAPI.logout();
       if (res.data.resultCode === RESULT_CODE.SUCCEEDED) {
-        dispatch(appActions.setAppStatus({ status: "successed" }));
         dispatch(todoActions.clearTodosData({}));
         dispatch(tasksActions.clearTasks({}));
         return { isLoggedIn: false };
@@ -86,10 +78,7 @@ export const logout = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
         handleServerAppError(res.data, dispatch);
         return rejectWithValue(null);
       }
-    } catch (e) {
-      handleServerNetworkError(e, dispatch);
-      return rejectWithValue(null);
-    }
+    });
   },
 );
 export const authReducer = slice.reducer;
