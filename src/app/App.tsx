@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import "./App.css";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
@@ -8,18 +7,18 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Menu } from "@mui/icons-material";
-import { useAppDispatch, useAppSelector } from "app/state/store";
-import { TaskType } from "features/TodolistsList/api/todolists-api";
+import { useAppSelector } from "app/state/store";
 import { RequestStatusType } from "./app-reducer";
 import { ErrorSnackbar } from "common/components";
 import { Login } from "features/auth/ui/Login/Login";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { TodolistsList } from "features/TodolistsList/TodolistsList";
+import { TodolistsList } from "features/TodolistsList/ui/TodolistsList";
 import CircularProgress from "@mui/material/CircularProgress";
 import { isInitializedSelector } from "app/app.selector";
 import { isLoggedInSelector, statusSelector } from "features/auth/model/auth.selector";
 import { authThunks } from "features/auth/model/authReducer";
 import { useActions } from "app/hooks/useActions";
+import { TaskType } from "features/TodolistsList/api/task/tasks-api.types";
 
 export type TasksStateType = {
   [key: string]: Array<TaskType>;

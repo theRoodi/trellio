@@ -1,16 +1,16 @@
-import {
-  CreateTodoArgs,
-  RemoveTodoArg,
-  todolistsAPI,
-  TodolistType,
-  UpdateTodoArg,
-} from "features/TodolistsList/api/todolists-api";
 import { appActions, RequestStatusType } from "app/app-reducer";
 import { handleServerNetworkError } from "common/utils/handleServerNetworkError";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RESULT_CODE, tasksThunks } from "features/TodolistsList/Todolist/Task/tasks-reducer";
+import { RESULT_CODE, tasksThunks } from "features/TodolistsList/model/task/tasks-slice";
 import { createAppAsyncThunk, handleServerAppError } from "common/utils";
 import { thunkTryCatch } from "common/utils/thunk-try-catch";
+import {
+  CreateTodoArgs,
+  RemoveTodoArg,
+  TodolistType,
+  UpdateTodoArg,
+} from "features/TodolistsList/api/todo/todolists-api.types";
+import { todolistsAPI } from "features/TodolistsList/api/todo/todolists-api";
 
 export type FilterValuesType = "all" | "active" | "completed";
 export type TodolistDomainType = TodolistType & {
@@ -65,6 +65,9 @@ const slice = createSlice({
           state[index].title = action.payload.title;
         }
       });
+  },
+  selectors: {
+    selectTodos: (sliceState) => sliceState,
   },
 });
 export const setTodosTC = () => (dispatch: any) => {
@@ -137,4 +140,5 @@ export const changeTodolistTitle = createAppAsyncThunk<UpdateTodoArg, UpdateTodo
 
 export const todoReducer = slice.reducer;
 export const todoActions = slice.actions;
+export const { selectTodos } = slice.selectors;
 export const todoThunks = { addTodo, removeTodo, changeTodolistTitle };

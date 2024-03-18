@@ -5,27 +5,25 @@ import { TasksStateType } from "app/App";
 import { useAppDispatch, useAppSelector } from "app/state/store";
 import {
   FilterValuesType,
+  selectTodos,
   setTodosTC,
   todoActions,
   TodolistDomainType,
   todoThunks,
-} from "features/TodolistsList/Todolist/todolists-reducer";
-import { tasksThunks } from "features/TodolistsList/Todolist/Task/tasks-reducer";
+} from "features/TodolistsList/model/todo/todolists-slice";
+import { selectTasks, tasksThunks } from "features/TodolistsList/model/task/tasks-slice";
 import { AddItemForm } from "common/components/AddItemForm/AddItemForm";
-import { Todolist } from "features/TodolistsList/Todolist/Todolist";
+import { Todolist } from "features/TodolistsList/ui/Todolist/Todolist";
 import { Navigate } from "react-router-dom";
 import { isLoggedInSelector } from "features/auth/model/auth.selector";
-import { todoSelector } from "features/TodolistsList/Todolist/todo.selector";
-import { taskSelector } from "features/TodolistsList/Todolist/Task/task.selector";
-import { TaskStatuses } from "common/enums/enum";
 import { useActions } from "app/hooks/useActions";
 
 export const TodolistsList = () => {
-  const todo = useAppSelector<Array<TodolistDomainType>>(todoSelector);
-  const tasks = useAppSelector<TasksStateType>(taskSelector);
+  const todo = useAppSelector<Array<TodolistDomainType>>(selectTodos);
+  const tasks = useAppSelector<TasksStateType>(selectTasks);
   const isLoggedIn = useAppSelector(isLoggedInSelector);
   const dispatch = useAppDispatch();
-  const { addTask, removeTask, updateTask, getTasks } = useActions(tasksThunks);
+  const { addTask } = useActions(tasksThunks);
   const { changeTodolistTitle, addTodo, removeTodo } = useActions(todoThunks);
   const { changeTodolistFilter } = useActions(todoActions);
 
@@ -34,19 +32,8 @@ export const TodolistsList = () => {
     dispatch(setTodosTC());
   }, []);
 
-  const removeTaskHandler = useCallback(function (taskId: string, todoId: string) {
-    removeTask({ todoId, taskId });
-  }, []);
-
   const addTaskHandler = useCallback(function (title: string, todolistId: string) {
     addTask({ todolistId, title });
-  }, []);
-  const changeStatus = useCallback(function (taskId: string, status: TaskStatuses, todolistId: string) {
-    updateTask({ taskId, domainModel: { status }, todolistId });
-  }, []);
-
-  const changeTaskTitle = useCallback(function (taskId: string, title: string, todolistId: string) {
-    updateTask({ taskId, domainModel: { title }, todolistId });
   }, []);
 
   const changeFilter = useCallback(function (filter: FilterValuesType, id: string) {
@@ -88,13 +75,10 @@ export const TodolistsList = () => {
                   title={tl.title}
                   tasks={allTodolistTasks}
                   entityStatus={tl.entityStatus}
-                  removeTask={removeTaskHandler}
                   changeFilter={changeFilter}
                   addTask={addTaskHandler}
-                  changeTaskStatus={changeStatus}
                   filter={tl.filter}
                   removeTodolist={removeTodolist}
-                  changeTaskTitle={changeTaskTitle}
                   changeTodolistTitle={changeTodolistTitleHandler}
                 />
               </Paper>

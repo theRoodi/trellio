@@ -4,11 +4,11 @@ import { EditableSpan } from "common/components/EditableSpan/EditableSpan";
 import IconButton from "@mui/material/IconButton";
 import Button from "@mui/material/Button";
 import { Delete } from "@mui/icons-material";
-import { Task } from "features/TodolistsList/Todolist/Task/Task";
-import { FilterValuesType } from "features/TodolistsList/Todolist/todolists-reducer";
+import { Task } from "features/TodolistsList/ui/Todolist/Task/Task";
+import { FilterValuesType } from "features/TodolistsList/model/todo/todolists-slice";
 import { RequestStatusType } from "app/app-reducer";
 import { TaskStatuses } from "common/enums/enum";
-import { TaskType } from "features/TodolistsList/api/todolists-api";
+import { TaskType } from "features/TodolistsList/api/task/tasks-api.types";
 
 type PropsType = {
   id: string;
@@ -16,9 +16,6 @@ type PropsType = {
   tasks: Array<TaskType>;
   changeFilter: (value: FilterValuesType, todolistId: string) => void;
   addTask: (title: string, todolistId: string) => void;
-  changeTaskStatus: (id: string, status: TaskStatuses, todolistId: string) => void;
-  changeTaskTitle: (taskId: string, newTitle: string, todolistId: string) => void;
-  removeTask: (taskId: string, todolistId: string) => void;
   removeTodolist: (id: string) => void;
   changeTodolistTitle: (id: string, newTitle: string) => void;
   filter: FilterValuesType;
@@ -71,18 +68,7 @@ export const Todolist = React.memo(function (props: PropsType) {
         </IconButton>
       </h3>
       <AddItemForm addItem={addTask} disabled={props.entityStatus === "loading"} />
-      <div>
-        {tasksForTodolist?.map((t) => (
-          <Task
-            key={t.id}
-            task={t}
-            todolistId={props.id}
-            removeTask={props.removeTask}
-            changeTaskTitle={props.changeTaskTitle}
-            changeTaskStatus={props.changeTaskStatus}
-          />
-        ))}
-      </div>
+      <div>{tasksForTodolist?.map((t) => <Task key={t.id} task={t} todolistId={props.id} />)}</div>
       <div style={{ paddingTop: "10px" }}>
         <Button variant={props.filter === "all" ? "outlined" : "text"} onClick={onAllClickHandler} color={"inherit"}>
           All

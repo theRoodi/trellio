@@ -1,12 +1,12 @@
 import { appActions } from "app/app-reducer";
 import { handleServerNetworkError } from "common/utils/handleServerNetworkError";
-import { LoginDataType } from "features/auth/ui/Login/Login";
-import { todoActions } from "features/TodolistsList/Todolist/todolists-reducer";
+import { todoActions } from "features/TodolistsList/model/todo/todolists-slice";
 import { createSlice } from "@reduxjs/toolkit";
-import { RESULT_CODE, tasksActions } from "features/TodolistsList/Todolist/Task/tasks-reducer";
+import { RESULT_CODE, tasksActions } from "features/TodolistsList/model/task/tasks-slice";
 import { createAppAsyncThunk, handleServerAppError } from "common/utils";
 import { authAPI } from "features/auth/api/authApi";
 import { thunkTryCatch } from "common/utils/thunk-try-catch";
+import { LoginDataType } from "features/auth/lib/useLogin";
 
 const slice = createSlice({
   name: "auth",
