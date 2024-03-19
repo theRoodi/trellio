@@ -109,7 +109,7 @@ export const addTask = createAppAsyncThunk<{ task: TaskType }, CreateTaskArgsTyp
         return { task };
       } else {
         handleServerAppError(res.data, dispatch);
-        return rejectWithValue(null);
+        return rejectWithValue(res.data);
       }
     });
   },

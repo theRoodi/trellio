@@ -2,10 +2,11 @@ import React, { ChangeEvent, KeyboardEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import { AddBox } from "@mui/icons-material";
+import { BaseResponseType } from "types/responce.types";
 
 type AddItemFormPropsType = {
   disabled?: boolean;
-  addItem: (title: string) => void;
+  addItem: (title: string) => Promise<unknown>;
 };
 
 export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
@@ -14,8 +15,14 @@ export const AddItemForm = React.memo(function (props: AddItemFormPropsType) {
 
   const addItem = () => {
     if (title.trim() !== "") {
-      props.addItem(title);
-      setTitle("");
+      props
+        .addItem(title)
+        .then(() => {
+          setTitle("");
+        })
+        .catch((e: BaseResponseType) => {
+          setError(e.messages[0]);
+        });
     } else {
       setError("Title is required");
     }

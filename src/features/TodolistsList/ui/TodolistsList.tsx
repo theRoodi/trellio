@@ -23,34 +23,16 @@ export const TodolistsList = () => {
   const tasks = useAppSelector<TasksStateType>(selectTasks);
   const isLoggedIn = useAppSelector(isLoggedInSelector);
   const dispatch = useAppDispatch();
-  const { addTask } = useActions(tasksThunks);
-  const { changeTodolistTitle, addTodo, removeTodo } = useActions(todoThunks);
-  const { changeTodolistFilter } = useActions(todoActions);
+  const { addTodo } = useActions(todoThunks);
 
   useEffect(() => {
     if (!isLoggedIn) return;
     dispatch(setTodosTC());
   }, []);
 
-  const addTaskHandler = useCallback(function (title: string, todolistId: string) {
-    addTask({ todolistId, title });
-  }, []);
-
-  const changeFilter = useCallback(function (filter: FilterValuesType, id: string) {
-    changeTodolistFilter({ id, filter });
-  }, []);
-
-  const removeTodolist = useCallback(function (id: string) {
-    removeTodo({ id });
-  }, []);
-
-  const changeTodolistTitleHandler = useCallback(function (id: string, title: string) {
-    changeTodolistTitle({ id, title });
-  }, []);
-
   const addTodolist = useCallback(
     (title: string) => {
-      addTodo({ title });
+      return addTodo({ title }).unwrap();
     },
     [dispatch],
   );
@@ -70,17 +52,7 @@ export const TodolistsList = () => {
           return (
             <Grid item key={tl.id}>
               <Paper style={{ padding: "10px" }}>
-                <Todolist
-                  id={tl.id}
-                  title={tl.title}
-                  tasks={allTodolistTasks}
-                  entityStatus={tl.entityStatus}
-                  changeFilter={changeFilter}
-                  addTask={addTaskHandler}
-                  filter={tl.filter}
-                  removeTodolist={removeTodolist}
-                  changeTodolistTitle={changeTodolistTitleHandler}
-                />
+                <Todolist todolist={tl} tasks={allTodolistTasks} />
               </Paper>
             </Grid>
           );

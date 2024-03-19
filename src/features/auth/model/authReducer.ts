@@ -1,7 +1,7 @@
 import { appActions } from "app/app-reducer";
 import { handleServerNetworkError } from "common/utils/handleServerNetworkError";
 import { todoActions } from "features/TodolistsList/model/todo/todolists-slice";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, isAnyOf, PayloadAction, UnknownAction } from "@reduxjs/toolkit";
 import { RESULT_CODE, tasksActions } from "features/TodolistsList/model/task/tasks-slice";
 import { createAppAsyncThunk, handleServerAppError } from "common/utils";
 import { authAPI } from "features/auth/api/authApi";
@@ -15,16 +15,12 @@ const slice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      .addCase(login.fulfilled, (state, action) => {
+    builder.addMatcher(
+      isAnyOf(authThunks.me.fulfilled, authThunks.login.fulfilled, authThunks.logout.fulfilled),
+      (state, action: PayloadAction<{ isLoggedIn: boolean }>) => {
         state.isLoggedIn = action.payload.isLoggedIn;
-      })
-      .addCase(logout.fulfilled, (state, action) => {
-        state.isLoggedIn = action.payload.isLoggedIn;
-      })
-      .addCase(me.fulfilled, (state, action) => {
-        state.isLoggedIn = action.payload.isLoggedIn;
-      });
+      },
+    );
   },
 });
 export const me = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(`${slice.name}/me`, async (_, thunkAPI) => {

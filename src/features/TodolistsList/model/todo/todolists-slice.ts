@@ -99,8 +99,8 @@ export const addTodo = createAppAsyncThunk<{ todo: TodolistType }, CreateTodoArg
         const todo = res.data.data.item;
         return { todo };
       } else {
-        handleServerAppError(res.data, dispatch);
-        return rejectWithValue(null);
+        handleServerAppError(res.data, dispatch, false);
+        return rejectWithValue(res.data);
       }
     });
   },
